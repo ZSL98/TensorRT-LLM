@@ -64,7 +64,7 @@ endef
 
 DOCKER_RUN_OPTS   ?= --rm -it --ipc=host --ulimit memlock=-1 --ulimit stack=67108864
 DOCKER_RUN_ARGS   ?=
-GPU_OPTS          ?= --gpus=all
+GPU_OPTS          ?= --privileged --gpus=all
 SOURCE_DIR        ?= $(shell readlink -f ..)
 CODE_DIR          ?= /code/tensorrt_llm
 RUN_CMD           ?=
@@ -77,6 +77,8 @@ endif
 	docker run $(DOCKER_RUN_OPTS) $(DOCKER_RUN_ARGS) \
     		$(GPU_OPTS) \
     		--volume $(SOURCE_DIR):$(CODE_DIR) \
+		    --volume /state/partition/slzhang/LLMs:/root/models \
+			--volume /home/slzhang/projects_v2/LLMs:/root/llms \
     		--workdir $(CODE_DIR) \
     		--hostname $(shell hostname)-$* \
     		--name $(CONTAINER_NAME)-$*-$(USER_NAME) \
